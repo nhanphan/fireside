@@ -1,14 +1,19 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/nhanphan/fireside/backend/api"
 	"github.com/nhanphan/fireside/backend/routes"
 
 	"github.com/iris-contrib/middleware/logger"
 	"github.com/kataras/iris"
+	"github.com/spf13/viper"
 )
 
 func main() {
+	setupConf()
+
 	// set the configs
 	iris.Config.Render.Template.Directory = "../frontend/templates"
 	iris.Config.Render.Template.Layout = "layout.html"
@@ -36,7 +41,25 @@ func main() {
 	registerAPI()
 
 	// start the server
-	iris.Listen("127.0.0.1:8080")
+	iris.Listen(viper.GetString("host") + ":" + viper.GetString("port"))
+}
+
+func setupConf() {
+	viper.SetDefault("host", "127.0.0.1")
+	viper.SetDefault("port", "8080")
+
+	viper.SetConfigType("json")
+	viper.SetConfigName("config")
+
+	// TODO: should add this in the future for production
+	// viper.AddConfigPath("/etc/fireside/")
+
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("..")
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil {             // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
 }
 
 func registerRoutes() {
