@@ -1,0 +1,237 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/post.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/post": {
+      "post": {
+        "operationId": "GetByUUID",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/postPost"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postGetByUUIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PostSvc"
+        ]
+      }
+    },
+    "/v1/post/search": {
+      "post": {
+        "operationId": "Search",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/postPosts"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postSearchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "PostSvc"
+        ]
+      }
+    },
+    "/v1/post/{uuid}": {
+      "get": {
+        "operationId": "GetByUUID",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/postPost"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ],
+        "tags": [
+          "PostSvc"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "postCondition": {
+      "type": "string",
+      "enum": [
+        "AND",
+        "OR"
+      ],
+      "default": "AND"
+    },
+    "postFilter": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "$ref": "#/definitions/postCondition"
+        },
+        "field": {
+          "$ref": "#/definitions/postPostField"
+        },
+        "intVal": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "operator": {
+          "$ref": "#/definitions/postOperator"
+        },
+        "stringVal": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "postGetByUUIDRequest": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/postPostField"
+          }
+        },
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "postOperator": {
+      "type": "string",
+      "enum": [
+        "EQ",
+        "IEQ",
+        "NE",
+        "NIE",
+        "GT",
+        "GTE",
+        "LT",
+        "LTE",
+        "LIKE",
+        "ISNULL",
+        "ISNOTNULL"
+      ],
+      "default": "EQ"
+    },
+    "postOrderBy": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/postPostField"
+        },
+        "isDescending": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      }
+    },
+    "postPost": {
+      "type": "object",
+      "properties": {
+        "creatorUuid": {
+          "type": "string",
+          "format": "string"
+        },
+        "type": {
+          "type": "string",
+          "format": "string"
+        },
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "postPostField": {
+      "type": "string",
+      "enum": [
+        "UUID",
+        "CREATOR_UUID",
+        "TYPE"
+      ],
+      "default": "UUID"
+    },
+    "postPosts": {
+      "type": "object",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/postPost"
+          }
+        }
+      }
+    },
+    "postSearchRequest": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/postPostField"
+          }
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/postFilter"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "orderBy": {
+          "$ref": "#/definitions/postOrderBy"
+        }
+      }
+    }
+  }
+}

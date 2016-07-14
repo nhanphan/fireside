@@ -1,0 +1,87 @@
+syntax = "proto3";
+package post;
+
+import "google/api/annotations.proto";
+
+service PostSvc {
+	rpc Search(SearchRequest) returns (Posts) {
+		option (google.api.http) = {
+			post: "/v1/post/search"
+      body: "*"
+		};
+	}
+  rpc GetByUUID(GetByUUIDRequest) returns (Post) {
+    option (google.api.http) = {
+      post: "/v1/post"
+      body: "*"
+      additional_bindings {
+        get: "/v1/post/{uuid}"
+      }
+    };
+  }
+}
+
+enum PostField {
+  UUID = 0;
+  CREATOR_UUID = 1;
+  TYPE = 2;
+}
+
+message Post {
+  string uuid = 1;
+  string creatorUuid = 2;
+  string type = 3;
+
+}
+
+message Posts {
+  repeated Post posts = 1;
+}
+
+message GetByUUIDRequest {
+  string uuid = 1;
+  repeated PostField fields = 2;
+}
+
+message SearchRequest {
+ repeated Filter filters = 1;
+ repeated PostField fields = 2;
+ int32 limit = 3;
+ int32 offset = 4;
+ OrderBy orderBy = 5;
+}
+
+message Filter {
+  PostField field = 1;
+  oneof value {
+    string stringVal = 2;
+    int32 intVal = 3;
+  }
+  Operator operator = 4;
+  Condition condition = 5;
+}
+
+enum Operator {
+  EQ = 0;
+	IEQ = 1;
+	NE = 2;
+	NIE = 3;
+	GT = 4;
+	GTE = 5;
+	LT = 6;
+	LTE = 7;
+	LIKE = 8;
+	ISNULL = 9;
+	ISNOTNULL = 10;
+}
+
+enum Condition {
+  AND = 0;
+  OR = 1;
+}
+
+message OrderBy {
+  PostField field = 1;
+  bool isDescending = 2;
+}
+
