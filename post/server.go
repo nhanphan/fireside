@@ -28,7 +28,7 @@ func NewServer(db *sqlx.DB) *Server {
 }
 
 func (h *Server) GetByUUID(ctx context.Context, r *pb.GetByUUIDRequest) (*pb.Post, error) {
-	post, err := search.NewSQLPostSearcher(h.db).GetByField(search.PostID, r.Uuid)
+	post, err := search.NewSQLPostSearcher(h.db).GetByField(search.PostUUID, r.Uuid)
 
 	if err != nil {
 		return nil, err

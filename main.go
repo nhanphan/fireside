@@ -28,7 +28,7 @@ var (
 func init() {
 	flag.Parse()
 
-	connectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
+	connectionString := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
@@ -73,7 +73,10 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	lis, _ := net.Listen("tcp", os.Getenv("PORT"))
+	lis, err := net.Listen("tcp", os.Getenv("PORT"))
+	if err != nil {
+		glog.Fatal(err)
+	}
 
 	s := grpc.NewServer()
 	pb.RegisterPostSvcServer(s, server)
@@ -102,7 +105,7 @@ func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handl
 	mux := runtime.NewServeMux(opts...)
 	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
 
-	err := pb.RegisterPostSvcHandlerFromEndpoint(ctx, mux, os.Getenv("Post_ENDPOINT"), dialOpts)
+	err := pb.RegisterPostSvcHandlerFromEndpoint(ctx, mux, os.Getenv("POST_ENDPOINT"), dialOpts)
 
 	if err != nil {
 		return nil, err
